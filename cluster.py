@@ -23,18 +23,23 @@ def detect_red_light(I):
     bounding_boxes = [] # This should be a list of lists, each of length 4. See format example below. 
     
 
-    def kmeans(data, k=3, normalize=False, limit=500):
+    def kmeans(data, k):
         mn = np.mean(data, 0)
         st = np.std(data, 0)
         data = (data - mn)/st
         np.random.shuffle(data)
         centers = data[:k]
 
-        for i in range(limit):
-            classifications = np.argmin(((data[:, :, None] - centers.T[None, :, :])**2).sum(axis=1), axis=1)
-            new_centers = np.array([data[classifications == j, :].mean(axis=0) for j in range(k)])
-            if (new_centers == centers).all():
+        for i in range(500):
+            dist = (data[:, :, None] - np.transpose(centers)[None, :, :])**2
+            cls = np.argmin(np.sum(dist, axis=1), axis=1)
+            nc = []
+            for j in range(k):
+                nc.append(np.mean(data[cls == j, :], axis=0))
+            nc = np.array(nc)
+            if (nc == centers).all():
                 break
+            centers = nc
             
         centers = centers * st + mn
         return centers
@@ -42,13 +47,16 @@ def detect_red_light(I):
     points = []
     for i in range(len(I)):
         for j in range(len(I[i])):
-            if I[i,j,0] > 100 and I[i,j,1] < 0.7 * I[i,j,0] and I[i,j,2] < 0.7 * I[i,j,0]:
+            if I[i,j,0] > 150 and I[i,j,1] < 0.7 * I[i,j,0] and I[i,j,2] < 0.7 * I[i,j,0]:
                 points.append([i, j])
+                
     points = np.array(points)
-    if len(points) <= 10:
+    if len(points) <= 20:
+        # don't do anything if 20 px or less)
         return bounding_boxes
 
-    ctrs = kmeans(points, 3)
+    # 4 boxes
+    ctrs = kmeans(points, 4)
     for center in ctrs:
         bounding_boxes.append([center[1] - 10, center[0] - 10, center[1] + 10, center[0] + 10])
     

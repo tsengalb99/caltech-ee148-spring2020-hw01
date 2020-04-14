@@ -19,18 +19,6 @@ def detect_red_light(I):
     I[:,:,1] is the green channel
     I[:,:,2] is the blue channel
     '''
-    
-    
-    bounding_boxes = [] # This should be a list of lists, each of length 4. See format example below. 
-    
-    '''
-    BEGIN YOUR CODE
-    '''
-    
-    '''
-    As an example, here's code that generates between 1 and 5 random boxes
-    of fixed size and returns the results in the proper format.
-    '''
 
     def get_red(size, img):
         boxes = []
@@ -41,7 +29,7 @@ def detect_red_light(I):
                 rect_bottom = img[i + size:i + 3*size, j:j + size]
                 avg = np.mean(np.mean(square_top, 0), 0)
                 avg_r = np.mean(np.mean(rect_bottom, 0), 0)
-                if avg[0] > 150 and avg[1] < 0.7 * avg[0] and avg[2] < 0.7 * avg[0] and np.mean(avg_r) < 100:
+                if avg[0] > 160 and avg[1] < 0.7 * avg[0] and avg[2] < 0.7 * avg[0] and np.mean(avg_r) < 50:
                     boxes.append([j, i, j + size, i + 3 * size])
                 
         return boxes

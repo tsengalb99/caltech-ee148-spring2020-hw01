@@ -19,18 +19,6 @@ def detect_red_light(I):
     I[:,:,1] is the green channel
     I[:,:,2] is the blue channel
     '''
-    
-    
-    bounding_boxes = [] # This should be a list of lists, each of length 4. See format example below. 
-    
-    '''
-    BEGIN YOUR CODE
-    '''
-    
-    '''
-    As an example, here's code that generates between 1 and 5 random boxes
-    of fixed size and returns the results in the proper format.
-    '''
 
     def get_red(size, img):
         boxes = []
